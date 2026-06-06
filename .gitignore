@@ -1,0 +1,23 @@
+# Datos (no subir — descargar desde Kaggle, ver ROADMAP/README)
+data/
+*.csv
+*.zip
+*.pkl
+*.parquet
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Modelos serializados
+src/*.pkl
+
+# Sistema
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
