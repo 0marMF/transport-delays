@@ -206,6 +206,38 @@ clima/eventos — justo lo que el roadmap pedía y dejamos implícito.
 
 ---
 
+## 🚀 De análisis a proyecto de Ciencia de Datos (Track DS — planificado)
+
+Aquí el modelo no es el producto (R²≈0). El producto de DS es un **pipeline de datos confiable y
+un reporte honesto**: saber distinguir "no hay señal" de "lo hicimos mal" es la habilidad que se
+demuestra. Así se ve eso como proyecto de DS, no solo como EDA.
+
+**Código modular → `src/`**
+- [ ] `src/data.py`, `src/features.py` (`has_event`, `extreme_weather`), `src/model.py`,
+      `src/report.py` (interpretación descriptiva). Notebooks como narrativa.
+- [ ] `config.yaml` + `python -m src.pipeline`.
+
+**Validación de datos rigurosa (lo más valioso aquí)**
+- [ ] Chequeos estilo *data contract* (rangos, nulos esperados, tipos) — al estilo Great Expectations.
+- [ ] **Guard anti-leakage** automatizado: el pipeline falla si `delayed` (target binarizado)
+      entra como feature. Que el error sea imposible de repetir.
+
+**Reporte y honestidad**
+- [ ] Reporte automatizado de **insights descriptivos** (min extra por clima/evento) — el
+      verdadero entregable dado que el modelo no predice.
+- [ ] Model card que diga claramente: baja señal, dataset pequeño/sintético, **no usar para
+      decisiones** sin mejores datos.
+
+**Tests y CI**
+- [ ] `pytest` para data validation + features + el guard de leakage.
+- [ ] GitHub Actions en cada push.
+- [ ] Baseline `DummyRegressor` registrado para contextualizar el R²≈0.
+
+> **Estilo:** comentarios y docs con voz de persona y honestidad por delante. Documentar el
+> hallazgo negativo sin maquillarlo es, justamente, lo que hace bueno a este proyecto.
+
+---
+
 ## Orden de desarrollo
 
 ```
