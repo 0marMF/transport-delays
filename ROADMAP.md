@@ -21,6 +21,17 @@ Leyenda: ⬜ Pendiente · 🔄 En progreso · ✅ Completado
 
 ---
 
+## 🔄 Backlog de mejoras — v1.1.0 *(planificado, aún sin implementar)*
+
+> Derivado de la revisión de calidad (2026-06-06). Faltó la interpretación de negocio, que es el foco declarado del proyecto.
+
+- [ ] **Interpretación de negocio descriptiva (Fase 3.5)** — cuantificar desde el EDA cuántos minutos añade la lluvia/nieve y qué eventos impactan más, con recomendaciones a operadores. Responde el foco del proyecto **aunque el modelo no prediga**.
+- [ ] **Verificar el encuadre de clasificación** ("retraso severo sí/no") para confirmar que también tiene baja señal.
+- [ ] **Baseline `DummyRegressor`** como referencia explícita del R²≈0.
+- [ ] Advertir en Fase 0 sobre el **tamaño pequeño (2,000 filas)** y el **leakage de `delayed`** (= target binarizado).
+
+---
+
 ## Fase 0 — Setup del entorno
 
 - [ ] Descargar dataset de Kaggle y colocar en `data/`
