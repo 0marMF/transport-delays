@@ -11,11 +11,11 @@
 
 | Fase | Componente | Estado |
 |---|---|---|
-| 0 | Setup del entorno | ⬜ Pendiente |
-| 1 | EDA | ⬜ Pendiente |
-| 2 | Preprocessing & Feature Engineering | ⬜ Pendiente |
-| 3 | Modelado & Evaluación | ⬜ Pendiente |
-| 4 | Cierre de portfolio | ⬜ Pendiente |
+| 0 | Setup del entorno | ✅ Completado |
+| 1 | EDA | ✅ Completado |
+| 2 | Preprocessing & Feature Engineering | ✅ Completado |
+| 3 | Modelado & Evaluación | ✅ Completado |
+| 4 | Cierre de portfolio | ✅ Completado |
 
 Leyenda: ⬜ Pendiente · 🔄 En progreso · ✅ Completado
 

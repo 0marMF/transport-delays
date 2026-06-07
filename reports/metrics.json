@@ -1,0 +1,23 @@
+{
+  "best_model": "Linear Regression",
+  "comparison": {
+    "Linear Regression": {
+      "CV_MAE": 8.073,
+      "MAE": 7.728,
+      "RMSE": 9.253,
+      "R2": -0.016
+    },
+    "Random Forest": {
+      "CV_MAE": 8.139,
+      "MAE": 7.759,
+      "RMSE": 9.254,
+      "R2": -0.016
+    },
+    "XGBoost": {
+      "CV_MAE": 8.288,
+      "MAE": 7.876,
+      "RMSE": 9.409,
+      "R2": -0.05
+    }
+  }
+}
