@@ -1,5 +1,13 @@
 {
   "best_model": "Linear Regression",
+  "baseline": {
+    "DummyRegressor (media)": {
+      "CV_MAE": 8.021,
+      "MAE": 7.703,
+      "RMSE": 9.19,
+      "R2": -0.002
+    }
+  },
   "comparison": {
     "Linear Regression": {
       "CV_MAE": 8.073,

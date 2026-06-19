@@ -3,6 +3,8 @@ data/
 *.csv
 *.zip
 *.parquet
+# El log de corridas SÍ se versiona (es pequeño y útil para comparar en el tiempo).
+!reports/experiments.csv
 
 # Pickles regenerables (splits), pero SÍ versionamos el modelo final
 *.pkl

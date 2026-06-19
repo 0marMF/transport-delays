@@ -1,7 +1,7 @@
-# 🚆 Public Transport Delays Prediction
+# Public Transport Delays Prediction
 
-> **Predecir retrasos de transporte con clima y eventos — y un hallazgo honesto sobre los datos**
-> *Pipeline de regresión completo + análisis crítico de la señal predictiva*
+> Predecir retrasos de transporte con clima y eventos — y un hallazgo honesto sobre los datos.
+> Pipeline de regresión reproducible + análisis crítico de la señal predictiva.
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)](https://python.org)
 [![XGBoost](https://img.shields.io/badge/XGBoost-2.0+-orange)](https://xgboost.readthedocs.io)
@@ -9,43 +9,55 @@
 
 ---
 
-## 📌 Objetivo
+## Objetivo
 
 Predecir el **retraso de llegada (minutos)** del transporte público a partir de clima, eventos y
-variables temporales (2,000 viajes), y evaluar **cuánta señal predictiva** ofrecen realmente esas
-variables.
+variables temporales (2,000 viajes), y —sobre todo— evaluar **cuánta señal predictiva** ofrecen
+realmente esas variables.
 
 ---
 
-## 🎯 Resultados (regresión, validación cruzada 5-fold + test)
+## Resultados (regresión, validación cruzada 5-fold + test)
 
 | Modelo | MAE (min) | RMSE (min) | R² |
 |---|---|---|---|
-| **Linear Regression** ✅ | **7.73** | 9.25 | −0.02 |
+| **DummyRegressor (predice la media)** | **7.70** | 9.19 | −0.00 |
+| Linear Regression | 7.73 | 9.25 | −0.02 |
 | Random Forest | 7.76 | 9.25 | −0.02 |
 | XGBoost | 7.88 | 9.41 | −0.05 |
 
-> **Hallazgo central (honesto):** el **R² ≈ 0** en todos los modelos — las features disponibles
-> (clima/eventos de este dataset sintético) **no explican** el retraso. Que un modelo lineal
-> empate con XGBoost confirma que **el problema es la señal de los datos, no el algoritmo**.
-> Ningún modelo rescata features sin información.
+> **Hallazgo central (honesto):** **ningún modelo le gana al baseline** que solo predice la media.
+> El R² es ≈ 0 (o negativo) en todos. Las features disponibles (clima/eventos de este dataset
+> sintético) **no explican** el retraso. Que un modelo lineal empate con XGBoost —y que ambos
+> empaten con predecir la media— confirma que **el problema es la señal de los datos, no el
+> algoritmo**. Ningún modelo rescata features sin información.
 
 ---
 
-## 🔬 Metodología
+## Metodología
+
+El pipeline reproducible vive en `src/` y corre de una sola vez:
+
+```bash
+python -m src.pipeline      # datos -> features -> baseline + 3 modelos -> metrics.json + modelo
+```
+
+Los notebooks cuentan la narrativa y se apoyan en `src/`:
 
 1. **EDA** (`01_EDA.ipynb`) — distribución del retraso, impacto de clima y eventos, patrones
    temporales, correlaciones.
 2. **Preprocessing** (`02_preprocessing.ipynb`) — imputación de `event_type`, feature engineering
    (`has_event`, `extreme_weather`), One-Hot encoding, escalado. **Se excluye `delayed`** porque es
    el target binarizado (*data leakage*).
-3. **Modelado** (`03_modeling.ipynb`) — Linear Regression, Random Forest y XGBoost con
-   **validación cruzada 5-fold** (dataset pequeño), métricas MAE/RMSE/R² y análisis de errores.
+3. **Modelado** (`03_modeling.ipynb`) — DummyRegressor (baseline), Linear Regression, Random Forest
+   y XGBoost con **validación cruzada 5-fold** (dataset pequeño), métricas MAE/RMSE/R² y análisis.
 
 ---
 
-## ⚠️ Lecciones del proyecto
+## Lecciones del proyecto
 
+- **Un baseline cambia la lectura:** sin el DummyRegressor, un R² ≈ 0 es ambiguo; con él queda
+  claro que los modelos no aportan nada sobre predecir la media.
 - **Detectar y evitar *data leakage*:** `delayed` correlaciona 0.76 con el target porque *es* el
   target binarizado — incluirlo habría inflado falsamente el rendimiento.
 - **Un R² bajo bien diagnosticado vale más que un número inflado:** el valor del análisis está en
@@ -54,28 +66,30 @@ variables.
 
 ---
 
-## 🏗️ Estructura
+## Estructura
 
 ```
 transport-delays/
+├── config.yaml                   # rutas, target, columnas a escalar/excluir, hiperparámetros
 ├── data/                         # dataset (no versionado) + splits.pkl
-├── notebooks/
-│   ├── 01_EDA.ipynb
-│   ├── 02_preprocessing.ipynb
-│   └── 03_modeling.ipynb
-├── src/best_model.pkl
-├── reports/                      # 8 visualizaciones + metrics.json
-├── HALLAZGOS.md
-├── README.md
-└── ROADMAP.md
+├── src/                          # config, data, features, model, pipeline
+│   └── best_model.pkl            # modelo + scaler serializados
+├── notebooks/                    # 01_EDA, 02_preprocessing, 03_modeling (importan src/)
+├── reports/                      # 8 visualizaciones + metrics.json + experiments.csv
+├── HALLAZGOS.md   README.md   ROADMAP.md
 ```
 
 ---
 
-## 🚀 Cómo ejecutar
+## Cómo ejecutar
 
 ```bash
 pip install -r requirements.txt
+
+# Pipeline completo de una vez (datos -> baseline + modelos -> métricas + modelo servible)
+python -m src.pipeline
+
+# O los notebooks (narrativa) en orden
 jupyter nbconvert --to notebook --execute --inplace notebooks/01_EDA.ipynb
 jupyter nbconvert --to notebook --execute --inplace notebooks/02_preprocessing.ipynb
 jupyter nbconvert --to notebook --execute --inplace notebooks/03_modeling.ipynb
@@ -84,11 +98,11 @@ jupyter nbconvert --to notebook --execute --inplace notebooks/03_modeling.ipynb
 > Dataset: [Public Transport Delays with Weather and Events — Kaggle](https://www.kaggle.com/datasets/khushikyad001/public-transport-delays-with-weather-and-events)
 > (colócalo en `data/`; no se versiona).
 
-> 📄 Detalle de detecciones y aprendizajes en [`HALLAZGOS.md`](HALLAZGOS.md).
+> Detalle de detecciones y aprendizajes en [`HALLAZGOS.md`](HALLAZGOS.md).
 
 ---
 
-## 👨‍💻 Autor
+## Autor
 
 **Omar Mora Flores** · Data Analyst & ML Engineer
-📧 omar13mor@gmail.com · 🔗 [linkedin.com/in/omar-mora-flores](https://linkedin.com/in/omar-mora-flores)
+omar13mor@gmail.com · [linkedin.com/in/omar-mora-flores](https://linkedin.com/in/omar-mora-flores)

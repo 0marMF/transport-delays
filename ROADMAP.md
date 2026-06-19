@@ -11,29 +11,29 @@
 
 | Fase | Componente | Estado |
 |---|---|---|
-| 0 | Setup del entorno | ✅ Completado |
-| 1 | EDA | ✅ Completado |
-| 2 | Preprocessing & Feature Engineering | ✅ Completado |
-| 3 | Modelado & Evaluación | ✅ Completado |
-| 4 | Cierre de portfolio | ✅ Completado |
+| 0 | Setup del entorno | Completado |
+| 1 | EDA | Completado |
+| 2 | Preprocessing & Feature Engineering | Completado |
+| 3 | Modelado & Evaluación | Completado |
+| 4 | Cierre de portfolio | Completado |
 
-Leyenda: ⬜ Pendiente · 🔄 En progreso · ✅ Completado
+Leyenda: Pendiente · En progreso · Completado
 
 > **v1.0.0 completo.** Ver abajo **Mejoras planificadas (v1.1)** — faltó la **interpretación de
 > negocio descriptiva** (clima/eventos), que es el foco declarado del proyecto.
 
 ---
 
-## 🔄 Mejoras planificadas (v1.1) — auditoría 2026-06-06
+## Mejoras planificadas (v1.1) — auditoría 2026-06-06
 
-### 🔴 P1 — Interpretación de negocio descriptiva (el foco declarado)
+### P1 — Interpretación de negocio descriptiva (el foco declarado)
 El modelo no predice (R²≈0), pero la pregunta central — *cómo afectan clima y eventos* — **sí se
 responde descriptivamente** desde el EDA, y es lo que el proyecto promete.
 - [ ] Cuantificar **minutos extra por clima** (lluvia/nieve/tormenta vs despejado)
 - [ ] **Ranking de tipos de evento** por impacto medio en el retraso
 - [ ] Recomendaciones para operadores basadas en lo descriptivo → sección en `03_modeling` o nuevo notebook
 
-### 🟠 P2 — Cerrar el análisis
+### P2 — Cerrar el análisis
 - [ ] Confirmar que el encuadre de **clasificación** ("retraso severo sí/no") también tiene poca señal
 - [ ] **DummyRegressor** como baseline explícito (contextualizar el R²≈0)
 
@@ -42,7 +42,7 @@ clima/eventos — justo lo que el roadmap pedía y dejamos implícito.
 
 ---
 
-## 🔄 Backlog de mejoras — v1.1.0 *(planificado, aún sin implementar)*
+## Backlog de mejoras — v1.1.0 *(planificado, aún sin implementar)*
 
 > Derivado de la revisión de calidad (2026-06-06). Faltó la interpretación de negocio, que es el foco declarado del proyecto.
 
@@ -206,7 +206,7 @@ clima/eventos — justo lo que el roadmap pedía y dejamos implícito.
 
 ---
 
-## 🚀 De análisis a proyecto de Ciencia de Datos (Track DS — planificado)
+## De análisis a proyecto de Ciencia de Datos (Track DS — planificado)
 
 Aquí el modelo no es el producto (R²≈0). El producto de DS es un **pipeline de datos confiable y
 un reporte honesto**: saber distinguir "no hay señal" de "lo hicimos mal" es la habilidad que se

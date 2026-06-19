@@ -1,0 +1,34 @@
+# Configuración central de la predicción de retrasos de transporte público.
+# El objetivo declarado es entender el efecto de clima/eventos; el modelo es secundario porque,
+# como se documenta, las features no tienen señal (R² ~ 0). Aquí vive todo lo configurable.
+
+seed: 42
+
+data:
+  raw_csv: data/public_transport_delays.csv
+  target: actual_arrival_delay_min       # retraso de llegada en minutos (lo que se intenta predecir)
+  model: src/best_model.pkl              # modelo + scaler serializados (los carga la API)
+
+paths:
+  reports: reports
+  metrics: reports/metrics.json
+  experiments: reports/experiments.csv
+
+split:
+  test_size: 0.2                         # 80/20; con 2,000 filas además usamos CV de 5 folds
+
+features:
+  # Columnas que NO son features: identificadores y campos de fecha/hora crudos.
+  id_cols: [trip_id, date, time, route_id, origin_station, destination_station,
+            scheduled_departure, scheduled_arrival]
+  # Fuga de información: `delayed` ES el target binarizado. Nunca debe entrar como feature.
+  leakage_cols: [delayed]
+  # Climas que consideramos "extremos" para la bandera extreme_weather.
+  extreme_weather: [Storm, Snow, Fog]
+  # Numéricas continuas que se escalan (StandardScaler). El resto son banderas 0/1 o dummies.
+  scale_cols: [temperature_C, humidity_percent, wind_speed_kmh, precipitation_mm,
+               event_attendance_est, traffic_congestion_index, actual_departure_delay_min]
+
+models:
+  random_forest: {n_estimators: 300, max_depth: 8}
+  xgboost: {n_estimators: 200, max_depth: 3, learning_rate: 0.05, subsample: 0.9, tree_method: hist}
