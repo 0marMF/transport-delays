@@ -1,0 +1,85 @@
+{
+  "global_mean_delay_min": 13.32,
+  "global_std_delay_min": 9.29,
+  "weather_delta_vs_clear": {
+    "Rain": {
+      "mean": 13.62,
+      "delta": 0.12,
+      "n": 321
+    },
+    "Snow": {
+      "mean": 13.53,
+      "delta": 0.03,
+      "n": 343
+    },
+    "Clear": {
+      "mean": 13.5,
+      "delta": 0.0,
+      "n": 343
+    },
+    "Storm": {
+      "mean": 13.29,
+      "delta": -0.21,
+      "n": 337
+    },
+    "Cloudy": {
+      "mean": 13.07,
+      "delta": -0.43,
+      "n": 325
+    },
+    "Fog": {
+      "mean": 12.88,
+      "delta": -0.62,
+      "n": 331
+    }
+  },
+  "event_delta_vs_none": {
+    "Protest": {
+      "mean": 13.9,
+      "delta": 0.37,
+      "n": 86
+    },
+    "Parade": {
+      "mean": 13.62,
+      "delta": 0.09,
+      "n": 105
+    },
+    "None": {
+      "mean": 13.53,
+      "delta": 0.0,
+      "n": 1173
+    },
+    "Concert": {
+      "mean": 12.83,
+      "delta": -0.69,
+      "n": 203
+    },
+    "Sports": {
+      "mean": 12.82,
+      "delta": -0.71,
+      "n": 212
+    },
+    "Festival": {
+      "mean": 12.77,
+      "delta": -0.76,
+      "n": 221
+    }
+  },
+  "max_abs_weather_delta_min": 0.62,
+  "max_abs_event_delta_min": 0.76,
+  "classification_signal": {
+    "15": {
+      "severe_rate": 0.463,
+      "auc": 0.496
+    },
+    "18": {
+      "severe_rate": 0.364,
+      "auc": 0.505
+    },
+    "20": {
+      "severe_rate": 0.299,
+      "auc": 0.486
+    }
+  },
+  "verdict": "Sin señal utilizable. Las diferencias por clima (<0.62 min) y por evento (<0.76 min) son ruido frente a una desviación de 9.3 min, y reformular como clasificación da AUC ~ 0.5. Clima y eventos de este dataset no explican el retraso."
+}

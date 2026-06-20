@@ -34,6 +34,26 @@ realmente esas variables.
 
 ---
 
+## Interpretación descriptiva (clima y eventos)
+
+Como el modelo no predice, la pregunta declarada del proyecto —*cómo afectan clima y eventos*— se
+responde de forma descriptiva (`python -m src.report` → [`reports/insights.md`](reports/insights.md)):
+
+- **Por clima:** la mayor diferencia es **0.62 min** (Fog vs Clear) — y encima con signo absurdo
+  (la niebla *reduce* el retraso). Frente a una desviación de **9.3 min**, es ruido.
+- **Por evento:** la mayor diferencia es **0.76 min**; conciertos y festivales aparecen con *menos*
+  retraso que un día sin evento. También ruido.
+- **¿Y como clasificación** ("retraso severo sí/no")? AUC ≈ **0.5** en todos los umbrales —
+  indistinguible de tirar una moneda.
+
+![Impacto descriptivo de clima y eventos](reports/09_descriptive_impact.png)
+
+> Conclusión honesta: clima y eventos de este dataset no explican el retraso, ni para predecir ni
+> para describir. La recomendación operativa es planificar con el promedio (~13 min) y conseguir
+> datos con señal real (GPS/AVL, ocupación, incidencias) para un modelo útil.
+
+---
+
 ## Metodología
 
 El pipeline reproducible vive en `src/` y corre de una sola vez:
@@ -41,6 +61,7 @@ El pipeline reproducible vive en `src/` y corre de una sola vez:
 ```bash
 python -m src.pipeline      # datos -> features -> baseline + 3 modelos -> metrics.json + modelo
 python -m src.validate      # chequea el contrato de datos (rangos, categorías, nulos esperados)
+python -m src.report        # reporte descriptivo clima/eventos -> reports/insights.{json,md} + figura
 ```
 
 Antes de entrenar, el pipeline aplica un **contrato de datos** (rangos, categorías y nulos
@@ -77,10 +98,10 @@ Los notebooks cuentan la narrativa y se apoyan en `src/`:
 transport-delays/
 ├── config.yaml                   # rutas, target, columnas a escalar/excluir, hiperparámetros
 ├── data/                         # dataset (no versionado) + splits.pkl
-├── src/                          # config, data, features, model, validate, pipeline
+├── src/                          # config, data, features, model, validate, report, pipeline
 │   └── best_model.pkl            # modelo + scaler serializados
 ├── notebooks/                    # 01_EDA, 02_preprocessing, 03_modeling (importan src/)
-├── reports/                      # 8 visualizaciones + metrics.json + experiments.csv
+├── reports/                      # visualizaciones + metrics.json + experiments.csv + insights.{json,md}
 ├── HALLAZGOS.md   README.md   ROADMAP.md
 ```
 
