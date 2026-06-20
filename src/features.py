@@ -18,23 +18,29 @@ def add_engineered(df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     return df
 
 
-def build_design_matrix(df: pd.DataFrame, cfg: dict | None = None) -> tuple[pd.DataFrame, pd.Series]:
-    """Devuelve (X, y) listos para modelar.
+def encode(df: pd.DataFrame, cfg: dict, drop_first: bool = True) -> pd.DataFrame:
+    """Matriz de features (sin target): quita ids/leakage, deriva banderas y aplica One-Hot.
 
-    Quita identificadores, columnas de fecha/hora crudas y las de leakage; codifica las categóricas
-    con One-Hot (drop_first para evitar colinealidad) y pasa las banderas booleanas a 0/1.
+    `drop_first=True` en entrenamiento evita colinealidad. En inferencia de una sola fila se usa
+    `drop_first=False` y luego se alinea a las columnas entrenadas (ver `align_to`): si no, una fila
+    con una sola categoría perdería su dummy.
     """
-    cfg = cfg or load_config()
-    target = cfg["data"]["target"]
     feats = cfg["features"]
-
     df = add_engineered(df, cfg)
-    y = df[target]
-
-    drop = [*feats["id_cols"], *feats["leakage_cols"], target]
+    drop = [*feats["id_cols"], *feats["leakage_cols"], cfg["data"]["target"]]
     X = df.drop(columns=[c for c in drop if c in df.columns])
-
     cat = X.select_dtypes("object").columns.tolist()
-    X = pd.get_dummies(X, columns=cat, drop_first=True)
-    X = X.astype({c: "int" for c in X.select_dtypes("bool").columns})
-    return X, y
+    X = pd.get_dummies(X, columns=cat, drop_first=drop_first)
+    return X.astype({c: "int" for c in X.select_dtypes("bool").columns})
+
+
+def build_design_matrix(df: pd.DataFrame, cfg: dict | None = None) -> tuple[pd.DataFrame, pd.Series]:
+    """Devuelve (X, y) listos para entrenar."""
+    cfg = cfg or load_config()
+    y = df[cfg["data"]["target"]]
+    return encode(df, cfg, drop_first=True), y
+
+
+def align_to(X: pd.DataFrame, feature_names: list[str]) -> pd.DataFrame:
+    """Alinea X a las columnas que el modelo espera (rellena con 0 las dummies ausentes)."""
+    return X.reindex(columns=feature_names, fill_value=0)

@@ -92,13 +92,28 @@ Los notebooks cuentan la narrativa y se apoyan en `src/`:
 
 ---
 
+## Servir el modelo (con honestidad)
+
+El modelo se sirve igual que en los demás proyectos del portafolio, como demostración de serving —
+no porque sea fiable. **Con R² ≈ 0 devuelve algo cercano al promedio histórico (~13 min) casi sin
+importar el input;** por eso tanto el CLI como la API lo dicen explícitamente.
+
+```bash
+python -m src.score --weather Storm --event Sports --departure-delay 10   # CLI
+uvicorn src.api:app --reload                                              # API: POST /predict (docs en /docs)
+```
+
+> No usar para decisiones a nivel de viaje. Detalle de supuestos y límites en `MODEL_CARD.md`.
+
+---
+
 ## Estructura
 
 ```
 transport-delays/
 ├── config.yaml                   # rutas, target, columnas a escalar/excluir, hiperparámetros
 ├── data/                         # dataset (no versionado) + splits.pkl
-├── src/                          # config, data, features, model, validate, report, pipeline
+├── src/                          # config, data, features, model, validate, report, score, api, pipeline
 │   └── best_model.pkl            # modelo + scaler serializados
 ├── notebooks/                    # 01_EDA, 02_preprocessing, 03_modeling (importan src/)
 ├── reports/                      # visualizaciones + metrics.json + experiments.csv + insights.{json,md}
