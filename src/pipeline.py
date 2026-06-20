@@ -14,7 +14,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-from . import data, features, model
+from . import data, features, model, validate
 from .config import load_config, path
 
 
@@ -30,8 +30,15 @@ def run(cfg: dict | None = None) -> dict:
     rs = cfg["seed"]
     scale_cols = [c for c in cfg["features"]["scale_cols"]]
 
-    df = data.load(cfg)
+    # 1) Contrato de datos sobre el CRUDO (antes de limpiar): rangos, categorías, nulos esperados.
+    df_raw = data.load_raw(cfg)
+    validate.validate(df_raw, cfg)
+    df = data.clean(df_raw)
+
+    # 2) Features + guard anti-leakage: el pipeline falla aquí si `delayed` (target binarizado)
+    #    se cuela como feature. Hace ese error imposible de repetir.
     X, y = features.build_design_matrix(df, cfg)
+    validate.assert_no_leakage(X, cfg)
     scale_cols = [c for c in scale_cols if c in X.columns]
 
     # Split 80/20. La matriz de diseño se construye sobre TODO el dataset antes de partir, así las

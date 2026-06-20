@@ -40,7 +40,12 @@ El pipeline reproducible vive en `src/` y corre de una sola vez:
 
 ```bash
 python -m src.pipeline      # datos -> features -> baseline + 3 modelos -> metrics.json + modelo
+python -m src.validate      # chequea el contrato de datos (rangos, categorías, nulos esperados)
 ```
+
+Antes de entrenar, el pipeline aplica un **contrato de datos** (rangos, categorías y nulos
+esperados) y un **guard anti-leakage** que falla si `delayed` —el target binarizado— intenta
+colarse como feature. El objetivo: que el error de leakage sea **imposible de repetir**.
 
 Los notebooks cuentan la narrativa y se apoyan en `src/`:
 
@@ -72,7 +77,7 @@ Los notebooks cuentan la narrativa y se apoyan en `src/`:
 transport-delays/
 ├── config.yaml                   # rutas, target, columnas a escalar/excluir, hiperparámetros
 ├── data/                         # dataset (no versionado) + splits.pkl
-├── src/                          # config, data, features, model, pipeline
+├── src/                          # config, data, features, model, validate, pipeline
 │   └── best_model.pkl            # modelo + scaler serializados
 ├── notebooks/                    # 01_EDA, 02_preprocessing, 03_modeling (importan src/)
 ├── reports/                      # 8 visualizaciones + metrics.json + experiments.csv

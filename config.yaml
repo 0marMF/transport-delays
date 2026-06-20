@@ -32,3 +32,29 @@ features:
 models:
   random_forest: {n_estimators: 300, max_depth: 8}
   xgboost: {n_estimators: 200, max_depth: 3, learning_rate: 0.05, subsample: 0.9, tree_method: hist}
+
+# Contrato de datos: reglas de negocio que el dataset crudo DEBE cumplir. Si las viola, el pipeline
+# falla (fail-fast) en vez de entrenar sobre datos corruptos. Son cotas de negocio, no el min/max
+# observado en el sample (eso sería sobreajustar el contrato a estos 2,000 registros).
+contract:
+  required_cols: [actual_arrival_delay_min, actual_departure_delay_min, temperature_C,
+                  humidity_percent, wind_speed_kmh, precipitation_mm, event_attendance_est,
+                  traffic_congestion_index, holiday, peak_hour, weekday, season,
+                  transport_type, weather_condition, event_type, delayed]
+  ranges:                                  # [min, max] admisibles
+    actual_arrival_delay_min: [-60, 600]   # el retraso puede ser negativo (llegada anticipada)
+    actual_departure_delay_min: [-60, 600]
+    temperature_C: [-50, 60]
+    humidity_percent: [0, 100]
+    wind_speed_kmh: [0, 300]
+    precipitation_mm: [0, 500]
+    event_attendance_est: [0, 1000000]
+    traffic_congestion_index: [0, 100]
+    weekday: [0, 6]
+  binary: [holiday, peak_hour]             # solo 0/1
+  categories:                              # valores permitidos (los nulos se ignoran aquí)
+    transport_type: [Bus, Metro, Train, Tram]
+    weather_condition: [Clear, Cloudy, Fog, Rain, Snow, Storm]
+    season: [Autumn, Spring, Summer, Winter]
+    event_type: [Concert, Festival, Parade, Protest, Sports]
+  nullable: [event_type]                   # única columna que puede traer nulos (= "no hubo evento")
