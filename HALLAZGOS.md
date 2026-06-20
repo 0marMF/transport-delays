@@ -2,7 +2,7 @@
 
 > Detecciones del EDA y del modelado, más los aprendizajes del proyecto.
 
-**Autor:** Omar Mora Flores · **Última actualización:** 2026-06-06
+**Autor:** Omar Mora Flores · **Última actualización:** 2026-06-20
 
 ---
 
@@ -30,15 +30,36 @@ diagnosticar correctamente la falta de señal en lugar de reportar un número in
 
 | Modelo | MAE (min) | RMSE | R² |
 |---|---|---|---|
-| **Linear Regression** ✅ | 7.73 | 9.25 | −0.02 |
+| **DummyRegressor (media)** 🥇 | 7.70 | 9.19 | −0.00 |
+| Linear Regression | 7.73 | 9.25 | −0.02 |
 | Random Forest | 7.76 | 9.25 | −0.02 |
 | XGBoost | 7.88 | 9.41 | −0.05 |
 
 1. **R² ≈ 0 / negativo** → los modelos no superan a predecir la media. Las features no tienen
    poder predictivo sobre el retraso.
-2. **Un modelo lineal empata con XGBoost** → no es problema de capacidad del modelo, sino de
+2. **El baseline gana.** Añadir el DummyRegressor (CP1) lo deja en evidencia: predecir la media
+   tiene **el menor MAE**. Ningún modelo lo supera → sin baseline, un R²≈0 es ambiguo; con él, claro.
+3. **Un modelo lineal empata con XGBoost** → no es problema de capacidad del modelo, sino de
    **falta de señal en los datos**.
-3. **Validación cruzada 5-fold** confirma que el resultado es estable (no un artefacto del split).
+4. **Validación cruzada 5-fold** confirma que el resultado es estable (no un artefacto del split).
+
+---
+
+## 🔬 Detecciones descriptivas (CP3) — clima, eventos y clasificación
+
+El foco declarado del proyecto era *cómo afectan clima y eventos*. Respondido de forma descriptiva
+(`reports/insights.md`), la respuesta honesta es **"casi nada"**:
+
+| Señal | Resultado | Lectura |
+|---|---|---|
+| Clima (delta vs Clear) | máximo **0.62 min** (Fog) | ruido frente a desviación de 9.3 min |
+| Evento (delta vs None) | máximo **0.76 min** (Festival) | ruido; conciertos/eventos hasta *reducen* el retraso |
+| Clasificación "severo sí/no" | **AUC ≈ 0.5** (umbrales 15/18/20 min) | indistinguible de tirar una moneda |
+
+- 🤥 **Las direcciones son físicamente absurdas:** tormenta y niebla aparecen con *menos* retraso
+  que el cielo despejado. Eso no es un efecto real mal medido: es **ruido de un dataset sintético**.
+- 🧪 **Pista delatora:** ni el `actual_departure_delay_min` (retraso de salida, que en la realidad
+  predice fuertísimo el de llegada) tiene señal aquí → los datos están generados al azar.
 
 ---
 
@@ -62,9 +83,10 @@ diagnosticar correctamente la falta de señal en lugar de reportar un número in
 
 ## ⚠️ Limitaciones y próximos pasos
 
-- El dataset parece **sintético** y de baja señal; conclusiones de negocio limitadas.
+- El dataset parece **sintético** y de baja señal; conclusiones de negocio limitadas (ver `MODEL_CARD.md`).
+- [x] **Verificado el encuadre de clasificación** (retraso severo sí/no): AUC ≈ 0.5, tampoco hay señal.
+- [x] **Baseline `DummyRegressor`** añadido para contextualizar el R²≈0 (gana por MAE).
 - [ ] Conseguir datos reales con mayor señal: **GPS/AVL, ocupación, incidencias, obras**.
-- [ ] Reformular como **clasificación** (retraso severo sí/no) si el negocio lo prefiere.
 - [ ] Con datos reales: tuning de hiperparámetros y features de interacción clima×hora-pico.
 
 ---

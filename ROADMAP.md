@@ -19,37 +19,35 @@
 
 Leyenda: Pendiente · En progreso · Completado
 
-> **v1.0.0 completo.** Ver abajo **Mejoras planificadas (v1.1)** — faltó la **interpretación de
-> negocio descriptiva** (clima/eventos), que es el foco declarado del proyecto.
+> **v1.0.0 completo** (análisis + modelado en notebooks). **v1.1.0** lo reconvierte en un proyecto
+> de Ciencia de Datos (pipeline modular, validación con guard anti-leakage, reporte descriptivo,
+> serving, tests, CI, model card) y responde el foco declarado del proyecto — detalle abajo.
 
 ---
 
-## Mejoras planificadas (v1.1) — auditoría 2026-06-06
+## v1.1.0 — Rework a proyecto de Ciencia de Datos (completado)
 
-### P1 — Interpretación de negocio descriptiva (el foco declarado)
-El modelo no predice (R²≈0), pero la pregunta central — *cómo afectan clima y eventos* — **sí se
-responde descriptivamente** desde el EDA, y es lo que el proyecto promete.
-- [ ] Cuantificar **minutos extra por clima** (lluvia/nieve/tormenta vs despejado)
-- [ ] **Ranking de tipos de evento** por impacto medio en el retraso
-- [ ] Recomendaciones para operadores basadas en lo descriptivo → sección en `03_modeling` o nuevo notebook
+> Origen: auditoría de calidad (2026-06-06). El v1.0.0 dejó dos deudas: faltó la **interpretación
+> de negocio descriptiva** (el foco declarado) y el R²≈0 quedaba sin un baseline que lo
+> contextualizara. Como aquí el modelo no es el producto (no hay señal), el valor de DS está en un
+> **pipeline confiable y un diagnóstico honesto**. Se hizo por checkpoints (CP):
 
-### P2 — Cerrar el análisis
-- [ ] Confirmar que el encuadre de **clasificación** ("retraso severo sí/no") también tiene poca señal
-- [ ] **DummyRegressor** como baseline explícito (contextualizar el R²≈0)
+- [x] **CP1 — Código modular + baseline.** `src/` (`config`, `data`, `features`, `model`,
+      `pipeline`) + `config.yaml` + `python -m src.pipeline`. **DummyRegressor** como baseline
+      explícito: ningún modelo le gana a predecir la media → confirma la falta de señal.
+- [x] **CP2 — Validación de datos + guard anti-leakage.** Contrato de datos (rangos, categorías,
+      nulos) en `config.yaml` y `src/validate.py`; el guard hace **imposible** que `delayed` (target
+      binarizado) entre como feature.
+- [x] **CP3 — Reporte descriptivo (el producto real).** `src/report.py`: minutos extra por clima
+      (<0.62 min) y por evento (<0.76 min) —ruido—, chequeo de clasificación (AUC≈0.5) y
+      recomendaciones. Responde *cómo afectan clima y eventos* aunque el modelo no prediga.
+- [x] **CP4 — Serving.** CLI `python -m src.score` y API FastAPI `POST /predict`, ambos con
+      disclaimer honesto (R²≈0, no fiable a nivel de viaje).
+- [x] **CP5 — Tests + CI.** `pytest` (20, datos sintéticos) + GitHub Actions en cada push/PR.
+- [x] **CP6 — Documentación.** `MODEL_CARD.md` (no usar para decisiones) + consolidación de este
+      roadmap.
 
-**Por qué:** con un modelo sin señal, el valor del proyecto pasa a la **interpretación descriptiva**
-clima/eventos — justo lo que el roadmap pedía y dejamos implícito.
-
----
-
-## Backlog de mejoras — v1.1.0 *(planificado, aún sin implementar)*
-
-> Derivado de la revisión de calidad (2026-06-06). Faltó la interpretación de negocio, que es el foco declarado del proyecto.
-
-- [ ] **Interpretación de negocio descriptiva (Fase 3.5)** — cuantificar desde el EDA cuántos minutos añade la lluvia/nieve y qué eventos impactan más, con recomendaciones a operadores. Responde el foco del proyecto **aunque el modelo no prediga**.
-- [ ] **Verificar el encuadre de clasificación** ("retraso severo sí/no") para confirmar que también tiene baja señal.
-- [ ] **Baseline `DummyRegressor`** como referencia explícita del R²≈0.
-- [ ] Advertir en Fase 0 sobre el **tamaño pequeño (2,000 filas)** y el **leakage de `delayed`** (= target binarizado).
+Detalle de cada componente del Track DS más abajo.
 
 ---
 
@@ -212,26 +210,26 @@ Aquí el modelo no es el producto (R²≈0). El producto de DS es un **pipeline 
 un reporte honesto**: saber distinguir "no hay señal" de "lo hicimos mal" es la habilidad que se
 demuestra. Así se ve eso como proyecto de DS, no solo como EDA.
 
-**Código modular → `src/`**
-- [ ] `src/data.py`, `src/features.py` (`has_event`, `extreme_weather`), `src/model.py`,
-      `src/report.py` (interpretación descriptiva). Notebooks como narrativa.
-- [ ] `config.yaml` + `python -m src.pipeline`.
+**Código modular → `src/`** — hecho (CP1)
+- [x] `src/data.py`, `src/features.py` (`has_event`, `extreme_weather`), `src/model.py`,
+      `src/report.py` (interpretación descriptiva), `src/score.py`, `src/api.py`. Notebooks como narrativa.
+- [x] `config.yaml` + `python -m src.pipeline`.
 
-**Validación de datos rigurosa (lo más valioso aquí)**
-- [ ] Chequeos estilo *data contract* (rangos, nulos esperados, tipos) — al estilo Great Expectations.
-- [ ] **Guard anti-leakage** automatizado: el pipeline falla si `delayed` (target binarizado)
-      entra como feature. Que el error sea imposible de repetir.
+**Validación de datos rigurosa (lo más valioso aquí)** — hecho (CP2)
+- [x] Chequeos estilo *data contract* (rangos, nulos esperados, tipos) en `config.yaml` + `src/validate.py`.
+- [x] **Guard anti-leakage** automatizado: el pipeline falla si `delayed` (target binarizado)
+      entra como feature. Error imposible de repetir.
 
-**Reporte y honestidad**
-- [ ] Reporte automatizado de **insights descriptivos** (min extra por clima/evento) — el
-      verdadero entregable dado que el modelo no predice.
-- [ ] Model card que diga claramente: baja señal, dataset pequeño/sintético, **no usar para
-      decisiones** sin mejores datos.
+**Reporte y honestidad** — hecho (CP3, CP6)
+- [x] Reporte automatizado de **insights descriptivos** (min extra por clima/evento) — el
+      verdadero entregable dado que el modelo no predice (`src/report.py` → `reports/insights.{json,md}`).
+- [x] Model card (`MODEL_CARD.md`) que dice claramente: baja señal, dataset pequeño/sintético,
+      **no usar para decisiones** sin mejores datos.
 
-**Tests y CI**
-- [ ] `pytest` para data validation + features + el guard de leakage.
-- [ ] GitHub Actions en cada push.
-- [ ] Baseline `DummyRegressor` registrado para contextualizar el R²≈0.
+**Tests y CI** — hecho (CP5)
+- [x] `pytest` para data validation + features + el guard de leakage (20 tests, datos sintéticos).
+- [x] GitHub Actions en cada push/PR.
+- [x] Baseline `DummyRegressor` registrado para contextualizar el R²≈0 (CP1).
 
 > **Estilo:** comentarios y docs con voz de persona y honestidad por delante. Documentar el
 > hallazgo negativo sin maquillarlo es, justamente, lo que hace bueno a este proyecto.

@@ -118,6 +118,7 @@ transport-delays/
 │   └── best_model.pkl            # modelo + scaler serializados
 ├── notebooks/                    # 01_EDA, 02_preprocessing, 03_modeling (importan src/)
 ├── reports/                      # visualizaciones + metrics.json + experiments.csv + insights.{json,md}
+├── MODEL_CARD.md                 # supuestos, evaluación y por qué NO usar el modelo para decisiones
 ├── HALLAZGOS.md   README.md   ROADMAP.md
 ```
 
@@ -147,6 +148,7 @@ pytest
 > (colócalo en `data/`; no se versiona).
 
 > Detalle de detecciones y aprendizajes en [`HALLAZGOS.md`](HALLAZGOS.md).
+> Supuestos, evaluación y por qué NO usar el modelo para decisiones en [`MODEL_CARD.md`](MODEL_CARD.md).
 
 ---
 
