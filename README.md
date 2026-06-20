@@ -3,6 +3,7 @@
 > Predecir retrasos de transporte con clima y eventos — y un hallazgo honesto sobre los datos.
 > Pipeline de regresión reproducible + análisis crítico de la señal predictiva.
 
+[![CI](https://github.com/0marMF/transport-delays/actions/workflows/ci.yml/badge.svg)](https://github.com/0marMF/transport-delays/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)](https://python.org)
 [![XGBoost](https://img.shields.io/badge/XGBoost-2.0+-orange)](https://xgboost.readthedocs.io)
 [![Scikit-learn](https://img.shields.io/badge/Scikit--learn-1.5+-F7931E?logo=scikit-learn)](https://scikit-learn.org)
@@ -134,6 +135,12 @@ python -m src.pipeline
 jupyter nbconvert --to notebook --execute --inplace notebooks/01_EDA.ipynb
 jupyter nbconvert --to notebook --execute --inplace notebooks/02_preprocessing.ipynb
 jupyter nbconvert --to notebook --execute --inplace notebooks/03_modeling.ipynb
+```
+
+```bash
+# Tests (datos sintéticos + modelo versionado; no necesitan el dataset)
+pip install -r requirements-dev.txt
+pytest
 ```
 
 > Dataset: [Public Transport Delays with Weather and Events — Kaggle](https://www.kaggle.com/datasets/khushikyad001/public-transport-delays-with-weather-and-events)
