@@ -152,6 +152,17 @@ pytest
 
 ---
 
+## Stack tecnológico
+
+- **Python 3.10+**, **Pandas & NumPy** — datos.
+- **Scikit-learn** — modelos (Linear/RF + DummyRegressor), validación cruzada, escalado.
+- **XGBoost** — modelo de ensemble en la comparación.
+- **Matplotlib & Seaborn** — visualización.
+- **FastAPI & Uvicorn** — API de scoring (`POST /predict`, con disclaimer honesto).
+- **pytest & GitHub Actions** — tests (datos sintéticos + guard anti-leakage) y CI.
+
+---
+
 ## Autor
 
 **Omar Mora Flores** · Data Analyst & ML Engineer
